@@ -24,7 +24,7 @@ jobs:
           deno-version: v2.x
 
       - name: Build step
-        run: "deno run --allow-read --allow-write --allow-env --allow-net --allow-run bundle.ts"
+        run: "deno run --allow-read --allow-write --allow-env --allow-net --allow-run web/bundle.ts"
 
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
