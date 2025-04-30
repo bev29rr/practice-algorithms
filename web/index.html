@@ -8,6 +8,34 @@
     <title>Sorting and searching algorithms</title>
 </head>
 <body>
+    <h1>Guess the best</h1>
+    <h2>Guess the best algorithm for the job</h2>
+    <div class="selection-card">
+        <div class="card">
+            <div class="content">
+                <div class="row">
+                    <p class="title" id="searcher-text">Choose your searcher</p>
+                    <select id="searcher">
+                        <option value="binary">Binary</option>
+                        <option value="linear">Linear</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <p class="title" id="sorter-text">Choose your sorter</p>
+                    <select id="sorter">
+                        <option value="merge">Merge</option>
+                        <option value="insertion">Insertion</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="content">
+                <div class="question-card"></div>
+                <button class="begin">Begin</button>
+            </div>
+        </div>
+    </div>
     <script src="/dist/main.js" type="module"></script>
 </body>
 </html>
