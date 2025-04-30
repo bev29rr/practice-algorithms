@@ -1,16 +1,28 @@
 export const Sort = {
-    merge(arr: number[]) {
-        // divide
-        
-        /*
-        function divide(arr) {
-            if (arr.length < 2) return arr;
-            let left = arr.splice(0, Math.floor(arr.length / 2));
-            return divide([arr]);
-        }
-            */
+    merge(arr: number[]): any {
+        if (arr.length <= 1) return arr;
 
-        // conquer
+        // divide
+        const mid = Math.floor(arr.length / 2);
+        const left = Sort.merge(arr.slice(0, mid));
+        const right = Sort.merge(arr.slice(mid));
+        
+        function mergeArr(left: number[], right: number[]): number[] {
+            const result: number[] = [];
+            let i = 0, j = 0;
+
+            while (i < left.length && j < right.length) {
+                if (left[i] < right[j]) {
+                    result.push(left[i++]);
+                } else {
+                    result.push(right[j++]);
+                }
+            }
+
+            return result.concat(left.slice(i)).concat(right.slice(j));
+        }
+
+        return mergeArr(left, right);
     },
 
     insertion(arr: number[]): number[] {

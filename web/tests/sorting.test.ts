@@ -14,3 +14,9 @@ Deno.test("Sort.insertion()", () => {
         assertEquals(Sort.insertion(input), expected);
     }
 });
+
+Deno.test("Sort.merge()", () => {
+    for (const { input, expected } of testCases) {
+        assertEquals(Sort.insertion(input), expected);
+    }
+});
