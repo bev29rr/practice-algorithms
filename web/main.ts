@@ -1,3 +1,7 @@
-import './script.ts';
+import './modules/sorting.ts';
+import { Sort } from './modules/sorting.ts';
 
-console.log("Main loaded!");
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("Sorting!");
+    console.log(Sort.insertion([8, 5, 4]));
+});

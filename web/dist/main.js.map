@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["../script.ts", "../main.ts"],
-  "sourcesContent": ["document.addEventListener(\"DOMContentLoaded\", () => {\r\n    console.log(\"Hello from TypeScript!\");\r\n});", "import './script.ts';\r\n\r\nconsole.log(\"Main loaded!\");"],
-  "mappings": "AAAA,SAAS,iBAAiB,mBAAoB,IAAM,CAChD,QAAQ,IAAI,wBAAwB,CACxC,CAAC,ECAD,QAAQ,IAAI,cAAc",
-  "names": []
-}
