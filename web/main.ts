@@ -1,4 +1,5 @@
 import './modules/sorting.ts';
+import './modules/searching.ts';
 import { Sort } from './modules/sorting.ts';
 
 const searcher = document.getElementById("searcher") as HTMLSelectElement | null;
