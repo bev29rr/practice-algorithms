@@ -9,10 +9,11 @@ const questionText = document.getElementById("question");
 const submitBtn = document.getElementById("submit") as HTMLButtonElement | null;
 let buttonState = 0;
 
-let questions: [string, () => void][] = [
-    ["A small array (n ≈ 1,000)", () => {}],
-    ["A large array (n ≈ 1,000,000)", () => {}],
-    ["A sorted large array (n ≈ 1,000,000)", () => {}]
+let questions: [string, () => void, boolean][] = [
+    ["A small array (n ≈ 1,000)", () => {}, false],
+    ["A large array (n ≈ 1,000,000)", () => {}, true],
+    ["A sorted large array (n ≈ 1,000,000)", () => {}, true],
+    ["A small array (n ≈ 1,000) but with memory limitations", () => {}, false]
 ]
 
 function randomArr(size: number): number[] {
@@ -23,10 +24,10 @@ function randomArr(size: number): number[] {
     return result;
 }
 
-function timeAlg(fn: (arr: number[]) => number[], params: number[]): number {
+function timeAlg(fn: (arr: number[]) => number[], params: number[]): [number, number[]] {
     const start = performance.now();
-    fn(params);
-    return performance.now() - start;
+    const result = fn(params);
+    return [performance.now() - start, result];
 }
 
 searcher?.addEventListener("change", () => {
@@ -43,22 +44,24 @@ searcher?.addEventListener("change", () => {
     }
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-    console.log("Sorting!");
-    //console.log(timeAlg(Sort.insertion, randomArr(100000)));
-    console.log(Sort.merge([8, 5, 4]));
-});
-
 submitBtn?.addEventListener("click", () => {
     if (buttonState === 0) {
-        submitBtn.innerText = "Submit";
+        submitBtn.innerHTML = "Submit";
         buttonState = 1;
         let questionId = Math.floor(Math.random() * questions.length-1) + 1;
         const question = questions[questionId];
-        const [q, fn] = question;
+        const [q, ,] = question;
 
         if (questionText) {
             questionText.innerHTML = q;
+        }
+    } else if (buttonState === 2) {
+        if (searcher && sorter) {
+            if (searcher.value === "linear") {
+                
+            } else if (searcher.value === "binary") {
+                
+            }
         }
     }
 });
