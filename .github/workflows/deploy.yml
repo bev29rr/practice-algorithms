@@ -23,6 +23,9 @@ jobs:
         with:
           deno-version: v2.x
 
+      - name: Run tests
+        run: deno test --allow-all
+
       - name: Build step
         run: "deno run --allow-read --allow-write --allow-env --allow-net --allow-run web/bundle.ts"
 

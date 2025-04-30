@@ -2,11 +2,13 @@ export const Sort = {
     merge(arr: number[]) {
         // divide
         
+        /*
         function divide(arr) {
             if (arr.length < 2) return arr;
             let left = arr.splice(0, Math.floor(arr.length / 2));
             return divide([arr]);
         }
+            */
 
         // conquer
     },
