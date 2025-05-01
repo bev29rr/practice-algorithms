@@ -11,6 +11,7 @@ const searcher = document.getElementById("searcher") as HTMLSelectElement | null
 const sorter = document.getElementById("sorter") as HTMLSelectElement | null;
 const sorterText = document.getElementById("sorter-text");
 const questionText = document.getElementById("question");
+const answerText = document.getElementById("answer");
 
 const submitBtn = document.getElementById("submit") as HTMLButtonElement | null;
 let buttonState = 0;
@@ -50,9 +51,40 @@ searcher?.addEventListener("change", () => {
     }
 });
 
+function appendMessage(p1: [number, string], p2: [number, string]) {
+    if (questionText) questionText.innerHTML = "";
+    if (answerText) answerText.innerHTML = 
+    `
+        You chose: <b style="color: var(--main);">${p1[1]}</b> <br>
+        You got: <b style="color: var(--main);">${p1[0].toPrecision(2)}</b>ms <br>
+        I chose: <b style="color: var(--main);">${p2[1]}</b> <br>
+        I got: <b style="color: var(--main);">${p2[0].toPrecision(2)}</b>ms
+    `;
+}
+
+function aiFuncs(large: boolean): [(arr: number[], target: number) => number, ((arr: number[]) => number[]) | null, string] {
+    const choice = large ? Math.round(Math.random() * 1) : Math.round(Math.random() * 2);
+    if (choice == 0) {
+        return [Search.linear, null, "linear"];
+    } else {
+        let sorter: (arr: number[]) => number[];
+        let algText = "";
+        if (choice == 1) {
+            sorter = Sort.merge;
+            algText = "merge";
+        } else {
+            sorter = Sort.insertion;
+            algText = "insertion";
+        }
+        return [Search.binary, sorter, `binary + ${algText}`];
+    }
+}
+
 submitBtn?.addEventListener("click", () => {
     if (buttonState === 0) {
         submitBtn.innerHTML = "Submit";
+        if (answerText) answerText.innerHTML = "";
+
         buttonState = 1;
         questionId = Math.floor(Math.random() * questions.length-1) + 1;
         const question = questions[questionId];
@@ -61,21 +93,47 @@ submitBtn?.addEventListener("click", () => {
         if (questionText) {
             questionText.innerHTML = q;
         }
-    } else if (buttonState === 2) {
+    } else if (buttonState === 1) {
         if (searcher && sorter) {
-            const [, fn, conf] = questions[questionId];
-            let numberArr = fn();
-            let searchTime = 0;
-            let sortTime = 0;
+            console.log("as"); //TODO: remove
+            const [, numArrFn, conf] = questions[questionId];
+            let numberArr = numArrFn();
+            let timePlayer = 0;
+            let timeAi = 0;
+            let algorithmText = "";
 
             let numPos = numberArr.length - 1; //TODO: get real pos of num
 
+            //human
+            let p1Arr = structuredClone(numberArr);
             if (searcher.value === "linear") {
-                searchTime = Time.search(Search.linear, numberArr, numPos);
+                timePlayer = Time.search(Search.linear, p1Arr, numPos);
+                algorithmText = "linear";
             } else if (searcher.value === "binary") {
-                
+                let algText;
+                if (sorter.value === "merge") {
+                    [timePlayer, p1Arr] = Time.sort(Sort.merge, p1Arr);
+                    algText = "merge";
+                } else {
+                    [timePlayer, p1Arr] = Time.sort(Sort.insertion, p1Arr);
+                    algText = "insertion";
+                }
+                timePlayer += Time.search(Search.linear, p1Arr, numPos);
+                algorithmText = `binary + ${algText}`;
             }
-            window.alert(searchTime);
+
+            //ai
+            const [aiSearcher, aiSorter, algorithmTextAi] = aiFuncs(conf.large || false);
+
+            let p2Arr = structuredClone(numberArr);
+            if (aiSorter !== null) [timeAi, p2Arr] = Time.sort(aiSorter, p2Arr);
+            timeAi += Time.search(aiSearcher, p2Arr, numPos);
+
+            appendMessage([timePlayer, algorithmText], [timeAi, algorithmTextAi])
+            setTimeout(() => window.alert("hey"));
+
+            submitBtn.innerHTML = "Start";
+            buttonState = 0;
         }
     }
 });
