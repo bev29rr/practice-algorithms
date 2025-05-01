@@ -80,8 +80,13 @@ function aiFuncs(large: boolean): [(arr: number[], target: number) => number, ((
     }
 }
 
+function finaliseButton() {
+    if (submitBtn) submitBtn.innerHTML = "Start";
+    buttonState = 0;
+}
+
 submitBtn?.addEventListener("click", () => {
-    if (buttonState === 0) {
+    breakpoint: if (buttonState === 0) {
         submitBtn.innerHTML = "Submit";
         if (answerText) answerText.innerHTML = "";
 
@@ -95,16 +100,15 @@ submitBtn?.addEventListener("click", () => {
         }
     } else if (buttonState === 1) {
         if (searcher && sorter) {
-            console.log("as"); //TODO: remove
             const [, numArrFn, conf] = questions[questionId];
             let numberArr = numArrFn();
             let timePlayer = 0;
             let timeAi = 0;
             let algorithmText = "";
 
-            let numPos = numberArr.length - 1; //TODO: get real pos of num
+            let numPos = conf.pos ? conf.pos : Math.random(); //TODO: get real pos of num
 
-            //human
+            // human
             let p1Arr = structuredClone(numberArr);
             if (searcher.value === "linear") {
                 timePlayer = Time.search(Search.linear, p1Arr, numPos);
@@ -112,9 +116,19 @@ submitBtn?.addEventListener("click", () => {
             } else if (searcher.value === "binary") {
                 let algText;
                 if (sorter.value === "merge") {
+                    if (conf.memCap === true) {
+                        window.alert("Memory overload...");
+                        finaliseButton();
+                        break breakpoint;
+                    }
                     [timePlayer, p1Arr] = Time.sort(Sort.merge, p1Arr);
                     algText = "merge";
                 } else {
+                    if (conf.large === true) {
+                        window.alert("Preventing computer freeze, aborting...");
+                        finaliseButton();
+                        break breakpoint;
+                    }
                     [timePlayer, p1Arr] = Time.sort(Sort.insertion, p1Arr);
                     algText = "insertion";
                 }
@@ -122,18 +136,19 @@ submitBtn?.addEventListener("click", () => {
                 algorithmText = `binary + ${algText}`;
             }
 
-            //ai
+            // ai
             const [aiSearcher, aiSorter, algorithmTextAi] = aiFuncs(conf.large || false);
 
             let p2Arr = structuredClone(numberArr);
             if (aiSorter !== null) [timeAi, p2Arr] = Time.sort(aiSorter, p2Arr);
             timeAi += Time.search(aiSearcher, p2Arr, numPos);
 
-            appendMessage([timePlayer, algorithmText], [timeAi, algorithmTextAi])
-            setTimeout(() => window.alert("hey"));
+            let winner = timePlayer < timeAi ? "You": "I";
 
-            submitBtn.innerHTML = "Start";
-            buttonState = 0;
+            appendMessage([timePlayer, algorithmText], [timeAi, algorithmTextAi])
+            setTimeout(() => window.alert(`${winner} Won!`), 20);
+
+            finaliseButton();
         }
     }
 });

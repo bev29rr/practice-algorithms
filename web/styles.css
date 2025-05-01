@@ -97,3 +97,17 @@ button.begin {
 button.begin:hover {
     background-color: var(--main);
 }
+
+
+footer {
+    bottom: 0;
+    padding: 20px;
+    width: 100%;
+    background-color: var(--grey-light);
+    text-align: center;
+}
+
+a {
+    text-decoration: none;
+    color: var(--main);
+}
