@@ -1,6 +1,7 @@
 export const Search = {
     linear(arr: number[], target: number): number {
         for (let i = 0; i < arr.length; i++) {
+            console.log(`index: ${i}`); // to slow down linear
             if (arr[i] === target) return i;
         }
       return -1;

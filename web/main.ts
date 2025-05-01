@@ -20,7 +20,13 @@ let questions: [string, () => number[], Config][] = [
     ["A small array (n ≈ 1,000)", arrRange(1_000), { large: false }],
     ["A large array (n ≈ 1,000,000)", arrRange(1_000_000), { large: true }],
     ["A sorted large array (n ≈ 1,000,000)", arrRange(1_000_000, true), { large: true }],
-    ["A small array (n ≈ 1,000) but with memory limitations", arrRange(1_000), { memCap: true }]
+    ["A small array (n ≈ 1,000) but with memory limitations", arrRange(1_000), { memCap: true }],
+    ["A medium array (n ≈ 20,000) but with memory limitations", arrRange(20_000, true), { memCap: true }],
+    ["A medium array (n ≈ 20,000) but it's the last item with memory limitations", arrRange(1_000), { memCap: true, pos: 1_000 - 1 }],
+    ["A sorted small array (n ≈ 1,000) but it's the last item", arrRange(1_000, true), { pos: 1_000 - 1 }],
+    ["A sorted small array (n ≈ 1,000) but it's the first item", arrRange(1_000, true), { pos: 0 }],
+    ["A small array (n ≈ 1,000) but it's the last item", arrRange(1_000, true), { pos: 1_000 - 1 }],
+    ["A medium array (n ≈ 20,000) but it's the last item", arrRange(20_000, true), { pos: 20_000 - 1 }]
 ]
 
 function arrRange(n: number, sort = false): () => number[] {
@@ -51,19 +57,20 @@ searcher?.addEventListener("change", () => {
     }
 });
 
-function appendMessage(p1: [number, string], p2: [number, string]) {
+function appendMessage(p1: [number, string], p2: [number, string], winner: string) {
     if (questionText) questionText.innerHTML = "";
     if (answerText) answerText.innerHTML = 
     `
         You chose: <b style="color: var(--main);">${p1[1]}</b> <br>
         You got: <b style="color: var(--main);">${p1[0].toPrecision(2)}</b>ms <br>
         I chose: <b style="color: var(--main);">${p2[1]}</b> <br>
-        I got: <b style="color: var(--main);">${p2[0].toPrecision(2)}</b>ms
+        I got: <b style="color: var(--main);">${p2[0].toPrecision(2)}</b>ms <br>
+        ${winner} won
     `;
 }
 
 function aiFuncs(large: boolean): [(arr: number[], target: number) => number, ((arr: number[]) => number[]) | null, string] {
-    const choice = large ? Math.round(Math.random() * 2) : Math.round(Math.random() * 4);
+    const choice = large ? Math.round(Math.random() * 1) : Math.round(Math.random() * 4);
     if (choice == 0) {
         return [Search.linear, null, "linear"];
     } else {
@@ -129,10 +136,7 @@ submitBtn?.addEventListener("click", () => {
                     }
                     [timePlayer, p1Arr] = Time.sort(Sort.merge, p1Arr);
                     algText = "merge";
-                } else if (sorter.value === "quick") {
-                    [timePlayer, p1Arr] = Time.sort(Sort.quick, p1Arr);
-                    algText = "quick";
-                } else  {
+                } else {
                     if (conf.large === true) {
                         window.alert("Preventing computer freeze, aborting...");
                         finaliseButton();
@@ -141,6 +145,9 @@ submitBtn?.addEventListener("click", () => {
                     if (sorter.value === "insertion") {
                         [timePlayer, p1Arr] = Time.sort(Sort.insertion, p1Arr);
                         algText = "insertion";
+                    } else if (sorter.value === "quick") {
+                        [timePlayer, p1Arr] = Time.sort(Sort.quick, p1Arr);
+                        algText = "quick";
                     } else {
                         [timePlayer, p1Arr] = Time.sort(Sort.bubble, p1Arr);
                         algText = "insertion";
@@ -160,7 +167,7 @@ submitBtn?.addEventListener("click", () => {
 
             let winner = timePlayer < timeAi ? "You": "I";
 
-            appendMessage([timePlayer, algorithmText], [timeAi, algorithmTextAi])
+            appendMessage([timePlayer, algorithmText], [timeAi, algorithmTextAi], winner);
             setTimeout(() => window.alert(`${winner} Won!`), 20);
 
             finaliseButton();
