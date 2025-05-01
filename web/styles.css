@@ -18,6 +18,7 @@ body {
     align-items: center;
     flex-direction: column;
     margin: 24px;
+    margin-bottom: 0px;
 }
 
 h1 {
@@ -100,11 +101,14 @@ button.begin:hover {
 
 
 footer {
-    bottom: 0;
+    position: fixed;
+    bottom: 0px;
     padding: 20px;
+    margin: 0;
     width: 100%;
     background-color: var(--grey-light);
     text-align: center;
+    border: 2px solid var(--main);
 }
 
 a {
