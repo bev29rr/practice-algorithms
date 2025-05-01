@@ -63,7 +63,7 @@ function appendMessage(p1: [number, string], p2: [number, string]) {
 }
 
 function aiFuncs(large: boolean): [(arr: number[], target: number) => number, ((arr: number[]) => number[]) | null, string] {
-    const choice = large ? Math.round(Math.random() * 1) : Math.round(Math.random() * 2);
+    const choice = large ? Math.round(Math.random() * 2) : Math.round(Math.random() * 4);
     if (choice == 0) {
         return [Search.linear, null, "linear"];
     } else {
@@ -72,9 +72,15 @@ function aiFuncs(large: boolean): [(arr: number[], target: number) => number, ((
         if (choice == 1) {
             sorter = Sort.merge;
             algText = "merge";
-        } else {
+        } else if (choice == 2) {
+            sorter = Sort.quick;
+            algText = "quick";
+        } else if (choice == 3) {
             sorter = Sort.insertion;
             algText = "insertion";
+        } else {
+            sorter = Sort.bubble;
+            algText = "bubble";
         }
         return [Search.binary, sorter, `binary + ${algText}`];
     }
@@ -123,15 +129,24 @@ submitBtn?.addEventListener("click", () => {
                     }
                     [timePlayer, p1Arr] = Time.sort(Sort.merge, p1Arr);
                     algText = "merge";
-                } else {
+                } else if (sorter.value === "quick") {
+                    [timePlayer, p1Arr] = Time.sort(Sort.quick, p1Arr);
+                    algText = "quick";
+                } else  {
                     if (conf.large === true) {
                         window.alert("Preventing computer freeze, aborting...");
                         finaliseButton();
                         break breakpoint;
                     }
-                    [timePlayer, p1Arr] = Time.sort(Sort.insertion, p1Arr);
-                    algText = "insertion";
+                    if (sorter.value === "insertion") {
+                        [timePlayer, p1Arr] = Time.sort(Sort.insertion, p1Arr);
+                        algText = "insertion";
+                    } else {
+                        [timePlayer, p1Arr] = Time.sort(Sort.bubble, p1Arr);
+                        algText = "insertion";
+                    }
                 }
+
                 timePlayer += Time.search(Search.linear, p1Arr, numPos);
                 algorithmText = `binary + ${algText}`;
             }
